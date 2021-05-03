@@ -49,7 +49,20 @@ module CPU (
     input CLK
 );
 
-    // IF_stage if_stage
+    // variables connecting IF/ID stages
+    wire [31:0] instruction_IF_ID;
+    wire [31:0] PCPlus4_IF_ID;
+
+
+    IF_stage if_stage (
+        .CLK (CLK),
+
+        .PCSrc (1'b0), // later...
+        .PC_next_jumpOrBranch (32'b0), // later...
+
+        .instruction(instruction_IF_ID),
+        .PCPlus4(PCPlus4_IF_ID)
+    );
     // ID_stage id_stage
     // EX_stage ex_stage
     // MEM_stage mem_stage
