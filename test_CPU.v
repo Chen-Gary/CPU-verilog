@@ -6,7 +6,7 @@ module test_CPU;
     
     reg CLK;
 
-    //CPU testCPU (CLK);
+    CPU testCPU (CLK);
 
 
     // generate clock signal (T = 10)

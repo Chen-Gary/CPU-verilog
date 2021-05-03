@@ -1,6 +1,8 @@
 iverilog -o test_CPU test_CPU.v
+iverilog -o test_CPU.o test_CPU.v
 
 vvp -n wave -lxt2
 vvp test_CPU
+vvp test_CPU.o
 
 gtkwave wave.vcd
