@@ -100,6 +100,7 @@ module CPU (
     wire [ 4:0] rt_addr_ID_EX;
     wire [ 4:0] rd_addr_ID_EX;
     wire [ 4:0] shamt_ID_EX;
+    wire [25:0] address_Jtype_ID_EX;
     wire [31:0] rs_reg_ID_EX;
     wire [31:0] rt_reg_ID_EX;
     wire        RegWrite_ID_EX;
@@ -145,6 +146,7 @@ module CPU (
         .rt_addr_out       (rt_addr_ID_EX),
         .rd_addr_out       (rd_addr_ID_EX),
         .shamt_out         (shamt_ID_EX),
+        .address_Jtype_out (address_Jtype_ID_EX),
 
         .rs_reg            (rs_reg_ID_EX),
         .rt_reg            (rt_reg_ID_EX),
