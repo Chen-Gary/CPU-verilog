@@ -41,10 +41,11 @@ module ID_stage (
     // "directly" output (after parsing the instruction)
     output [4:0] rt_addr_out,
     output [4:0] rd_addr_out,
+    output [4:0] shamt_out,
 
     // output from Register File - Read part
-    output [31:0] rs_reg;
-    output [31:0] rt_reg;
+    output [31:0] rs_reg,
+    output [31:0] rt_reg,
 
     // output from Control Unit
     output reg RegWriteD,
@@ -52,9 +53,9 @@ module ID_stage (
     output reg MemWriteD,
     output reg BranchD,
     output reg JumpD,
-    output reg [5:0] ALUopD;
-    output reg [5:0] ALUfunctD;
-    output reg RegDstD;
+    output reg [5:0] ALUopD,
+    output reg [5:0] ALUfunctD,
+    output reg RegDstD
 );
 
     // local var
@@ -138,6 +139,7 @@ module ID_stage (
     */
     assign rt_addr_out = rt_addr;
     assign rd_addr_out = rd_addr;
+    assign shamt_out = shamt;
 
 
     /*
@@ -160,7 +162,7 @@ module ID_stage (
      *
      * Write data back to registerFile
     */
-    always @(posedge CLk) begin
+    always @(posedge CLK) begin
         #1; // wait for the WB_stage to be ready (wait for the three inputs from WB_stage to be updated)
         if (RegWriteW == 1'b1) begin
             registerFile [ $unsigned(wb_addr) ] <= wb_data;
@@ -193,59 +195,137 @@ module ID_stage (
         // (In addition, ALUop and ALUfunct have already been set to correct value)
         
         // lw
-
+        if (op==6'b100011) begin 
+            RegWriteD = 1'b1;
+            MemtoRegD = 1'b1;
+        end
         // sw
-
+        else if (op==6'b101011) begin
+            MemWriteD = 1'b1;
+        end
         // add
-
+        else if (op==6'b000000 && funct==6'b100000) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // addu
-
+        else if (op==6'b000000 && funct==6'b100001) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // addi
-
+        else if (op==6'b001000) begin
+            RegWriteD = 1'b1;
+        end
         // addiu
-
+        else if (op==6'b001001) begin
+            RegWriteD = 1'b1;
+        end
         // sub
-
+        else if (op==6'b000000 && funct==6'b100010) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // subu
-
+        else if (op==6'b000000 && funct==6'b100011) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // and
-
+        else if (op==6'b000000 && funct==6'b100100) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // andi
-
+        else if (op==6'b001100) begin
+            RegWriteD = 1'b1;
+        end
         // nor
-
+        else if (op==6'b000000 && funct==6'b100111) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // or
-
+        else if (op==6'b000000 && funct==6'b100101) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // ori
-
+        else if (op==6'b001101) begin
+            RegWriteD = 1'b1;
+        end
         // xor
-
+        else if (op==6'b000000 && funct==6'b100110) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // xori
-
+        else if (op==6'b001110) begin
+            RegWriteD = 1'b1;
+        end
         // sll
-
+        else if (op==6'b000000 && funct==6'b000000) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // sllv
-
+        else if (op==6'b000000 && funct==6'b000100) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // srl
-
+        else if (op==6'b000000 && funct==6'b000010) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // srlv
-
+        else if (op==6'b000000 && funct==6'b000110) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // sra
-
+        else if (op==6'b000000 && funct==6'b000011) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // srav
-
+        else if (op==6'b000000 && funct==6'b000111) begin
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // beq
-
+        else if (op==6'b000100) begin
+            BranchD = 1'b1;
+        end
         // bne
-
+        else if (op==6'b000101) begin
+            BranchD = 1'b1;
+        end
         // slt
-
+        else if (op==6'b000000 && funct==6'b101010) begin
+            // Set register rd to 1 if register rs is less than rt, and to 0 otherwise.
+            // Set register rd to 1 or 0 by "write back to $rd"
+            RegWriteD = 1'b1;
+            RegDstD = 1'b1;
+        end
         // j
-
+        else if (op==6'b000010) begin
+            JumpD = 1'b1;
+        end
         // jr
-
+        else if (op==6'b000000 && funct==6'b001000) begin
+            JumpD = 1'b1;
+        end
         // jal
-
+        else if (op==6'b000011) begin
+            RegWriteD = 1'b1;
+            JumpD = 1'b1;
+        end
+        // Unrecognized instruction
+        else begin
+            $display("Unrecognized instruction: %b (ID_stage)", instruction);
+            //$finish;
+        end
     end
 
 
