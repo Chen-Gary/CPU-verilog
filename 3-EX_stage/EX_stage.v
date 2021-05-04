@@ -48,6 +48,7 @@ module EX_stage (
     // "directly" output
     output [5:0] ALUopE,           // output "op" because WB_stage need to check whether it encounter "jal" instruction
     output [31:0] WriteData_out,   // the data to be written into MainRAM in MEM_stage ("sw" instrcution)
+    output [31:0] PCPlus4_out,     // "jal" may need to save this "PCPlus4_out" to $ra in WB_stage
 
     // output from Branch target calculator
     output [31:0] PCBranch_out,
@@ -116,11 +117,179 @@ module EX_stage (
         funct <= ALUfunctD;
         RegDstE <= RegDstD;
     end
-    // continuous assignment for two "directly" output
+    // continuous assignment for three "directly" outputs
     assign ALUopE = op;
     assign WriteData_out = rt_reg;
+    assign PCPlus4_out = PCPlus4;
 
 
+    /*
+     * submodule: Branch target calculator
+     * ------------------------------------------
+     * combinational logic
+     * Input: imm_signExtended, PCPlus4
+     * Output: PCBranch_out
+     *
+     * Calculate the branch target PC value, if the branch is taken
+    */
+    assign PCBranch_out = PCPlus4 + ( imm_signExtended << 2 );
+
+
+    /*
+     * submodule: Write back addr selector
+     * ------------------------------------------
+     * combinational logic
+     * Input: rt_addr, rd_addr, RegDstE, op (because of "jal" instruction)
+     * Output: wb_addr_out
+     * 
+     * Select the addr of register file where the data is going to be write back in WB_stage
+    */
+    always @(*) begin
+        // initialize
+        wb_addr_out = 5'b0;
+
+        if (RegDstE == 1'b0) begin
+            wb_addr_out = rt_addr;
+        end
+        else if (RegDstE == 1'b1) begin
+            wb_addr_out = rd_addr;
+        end
+
+        // check "jal" instrcution
+        if (op == 6'b000011) begin
+            wb_addr_out = 5'b11111;   // set to the addr of $ra
+        end
+    end
+
+
+    /*
+     * submodule: ALU
+     * ------------------------------------------
+     * combinational logic
+     * Input: op, funct    (to identify the instrcution)
+     *        rs_reg,                                             (1st operand of ALU)
+     *        rt_reg, imm_signExtended, imm_zeroExtended, shamt   (2nd operand of ALU)
+     * Output: ALUOut
+    */
+    always @(*) begin
+        // initialize
+        ALUOut = 32'b0;
+
+        // identify and execute the instruction
+        // lw
+        if (op==6'b100011) begin 
+
+        end
+        // sw
+        else if (op==6'b101011) begin
+            
+        end
+        // add
+        else if (op==6'b000000 && funct==6'b100000) begin
+            
+        end
+        // addu
+        else if (op==6'b000000 && funct==6'b100001) begin
+            
+        end
+        // addi
+        else if (op==6'b001000) begin
+            
+        end
+        // addiu
+        else if (op==6'b001001) begin
+            
+        end
+        // sub
+        else if (op==6'b000000 && funct==6'b100010) begin
+            
+        end
+        // subu
+        else if (op==6'b000000 && funct==6'b100011) begin
+            
+        end
+        // and
+        else if (op==6'b000000 && funct==6'b100100) begin
+            
+        end
+        // andi
+        else if (op==6'b001100) begin
+            
+        end
+        // nor
+        else if (op==6'b000000 && funct==6'b100111) begin
+            
+        end
+        // or
+        else if (op==6'b000000 && funct==6'b100101) begin
+            
+        end
+        // ori
+        else if (op==6'b001101) begin
+            
+        end
+        // xor
+        else if (op==6'b000000 && funct==6'b100110) begin
+            
+        end
+        // xori
+        else if (op==6'b001110) begin
+            
+        end
+        // sll
+        else if (op==6'b000000 && funct==6'b000000) begin
+            
+        end
+        // sllv
+        else if (op==6'b000000 && funct==6'b000100) begin
+            
+        end
+        // srl
+        else if (op==6'b000000 && funct==6'b000010) begin
+            
+        end
+        // srlv
+        else if (op==6'b000000 && funct==6'b000110) begin
+            
+        end
+        // sra
+        else if (op==6'b000000 && funct==6'b000011) begin
+            
+        end
+        // srav
+        else if (op==6'b000000 && funct==6'b000111) begin
+            
+        end
+        // beq
+        else if (op==6'b000100) begin
+            
+        end
+        // bne
+        else if (op==6'b000101) begin
+            
+        end
+        // slt
+        else if (op==6'b000000 && funct==6'b101010) begin
+            
+        end
+        // j
+        else if (op==6'b000010) begin
+            
+        end
+        // jr
+        else if (op==6'b000000 && funct==6'b001000) begin
+            
+        end
+        // jal
+        else if (op==6'b000011) begin
+            
+        end
+        // Unrecognized instruction
+        else begin
+            $display("Unrecognized instruction: %b (ID_stage)", instruction);
+            //$finish;
+        end
+    end
 
 
 
