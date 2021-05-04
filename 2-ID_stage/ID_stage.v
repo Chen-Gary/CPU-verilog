@@ -79,6 +79,19 @@ module ID_stage (
     end
 
 
+    // initialize control signals
+    initial begin
+        RegWriteD <= 1'b0;
+        MemtoRegD <= 1'b0;
+        MemWriteD <= 1'b0;
+        BranchD   <= 1'b0;
+        JumpD     <= 1'b0;
+        ALUopD    <= 6'b0;
+        ALUfunctD <= 6'b0;
+        RegDstD   <= 1'b0;
+    end
+
+
 
     /*
      * submodule: IF/ID pipeline register

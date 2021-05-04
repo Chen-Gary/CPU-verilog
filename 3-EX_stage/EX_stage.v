@@ -78,6 +78,16 @@ module EX_stage (
     reg RegDstE;
 
 
+    // initialize control signals
+    initial begin
+        RegWriteE <= 1'b0;
+        MemtoRegE <= 1'b0;
+        MemWriteE <= 1'b0;
+        BranchE   <= 1'b0;
+        JumpE     <= 1'b0;
+    end
+
+
     /*
      * submodule: ID/EX pipeline register
      * --------------------------------------
@@ -110,7 +120,7 @@ module EX_stage (
     assign ALUopE = op;
     assign WriteData_out = rt_reg;
 
-    
+
 
 
 
