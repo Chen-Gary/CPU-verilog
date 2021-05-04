@@ -72,6 +72,9 @@
  *      determine the wb_addr
  *      - 0: wb_addr = rt_addr
  *      - 1: wb_addr = rd_addr
+ * 
+ *
+ * Note that all the **outputted** control signals in each stage should be initialized to 0 (by using `initial` block)
 */
 
 

@@ -15,7 +15,6 @@
  *         Decode the instruction to generate control signals
 */
 
-// remark: 1. initialize register file!!
 
 module ID_stage (
     // input
