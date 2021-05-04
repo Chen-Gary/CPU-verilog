@@ -343,7 +343,7 @@ module EX_stage (
         end
         // Unrecognized instruction
         else begin
-            $display("Unrecognized instruction: %b (ID_stage)", instruction);
+            $display("Unrecognized instruction: op=%b, funct=%b (EX_stage)", op, funct);
             //$finish;
         end
     end

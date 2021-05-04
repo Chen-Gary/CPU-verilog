@@ -41,7 +41,7 @@ module ID_stage (
     output [4:0] rt_addr_out,
     output [4:0] rd_addr_out,
     output [4:0] shamt_out,
-    output [25:0] address_Jtype_out;
+    output [25:0] address_Jtype_out,
 
     // output from Register File - Read part
     output [31:0] rs_reg,
