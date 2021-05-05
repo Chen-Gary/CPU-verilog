@@ -30,10 +30,10 @@
  *
  * Parent Module |
  * --------------+----------------------------
- *      IF_stage |
+ *      IF_stage | InstructionRAM
  *      ID_stage |
  *      EX_stage |
- *     MEM_stage |
+ *     MEM_stage | MainMemory
  *      WB_stage |
 */
 
@@ -93,6 +93,7 @@ module CPU (
     wire [31:0] instruction_IF_ID;
     wire [31:0] PCPlus4_IF_ID;
 
+
     // variables connecting ID/EX stages
     wire [31:0] PCPlus4_ID_EX;
     wire [31:0] imm_signExtended_ID_EX;
@@ -113,6 +114,25 @@ module CPU (
     wire        RegDst_ID_EX;
 
 
+    // variables connecting EX/MEM stages
+    wire        RegWrite_EX_MEM;
+    wire        MemtoReg_EX_MEM;
+    wire        MemWrite_EX_MEM;
+    wire        Branch_EX_MEM;
+    wire        Jump_EX_MEM;
+
+    wire [ 5:0] ALUop_EX_MEM;
+    wire [31:0] WriteData_EX_MEM;
+    wire [31:0] PCPlus4_EX_MEM;
+
+    wire [31:0] PCBranch_EX_MEM;
+
+    wire [ 4:0] wb_addr_EX_MEM;
+
+    wire [31:0] ALUOut_EX_MEM;
+
+
+
     // instanciate the five stages
     IF_stage if_stage (
         // input
@@ -126,6 +146,7 @@ module CPU (
         .PCPlus4                (PCPlus4_IF_ID)
     );
     
+
     ID_stage id_stage (
         // input
         .CLK               (CLK),
@@ -161,7 +182,58 @@ module CPU (
         .RegDstD           (RegDst_ID_EX)
     );
 
-    // EX_stage ex_stage
+
+    EX_stage ex_stage (
+        // input
+        .CLK                     (CLK),
+
+        // input from ID_stage
+        .PCPlus4_in              (PCPlus4_ID_EX),
+
+        .imm_signExtended_in     (imm_signExtended_ID_EX),
+        .imm_zeroExtended_in     (imm_zeroExtended_ID_EX),
+
+        .rt_addr_in              (rt_addr_ID_EX),
+        .rd_addr_in              (rd_addr_ID_EX),
+        .shamt_in                (shamt_ID_EX),
+        .address_Jtype_in        (address_Jtype_ID_EX),
+
+        .rs_reg_in               (rs_reg_ID_EX),
+        .rt_reg_in               (rt_reg_ID_EX),
+
+        .RegWriteD               (RegWrite_ID_EX),
+        .MemtoRegD               (MemtoReg_ID_EX),
+        .MemWriteD               (MemWrite_ID_EX),
+        .BranchD                 (Branch_ID_EX),
+        .JumpD                   (Jump_ID_EX),
+        .ALUopD                  (ALUop_ID_EX),
+        .ALUfunctD               (ALUfunct_ID_EX),
+        .RegDstD                 (RegDst_ID_EX),
+
+        // output
+        // directly output
+        .RegWriteE               (RegWrite_EX_MEM),
+        .MemtoRegE               (MemtoReg_EX_MEM),
+        .MemWriteE               (MemWrite_EX_MEM),
+        .BranchE                 (Branch_EX_MEM),
+        .JumpE                   (Jump_EX_MEM),
+
+        // "directly" output
+        .ALUopE                  (ALUop_EX_MEM),
+        .WriteData_out           (WriteData_EX_MEM),
+        .PCPlus4_out             (PCPlus4_EX_MEM),
+
+        // output from Branch target calculator
+        .PCBranch_out            (PCBranch_EX_MEM),
+
+        // output from Write back addr selector
+        .wb_addr_out             (wb_addr_EX_MEM),
+
+        // output from ALU
+        .ALUOut                  (ALUOut_EX_MEM)
+    );
+
+
     // MEM_stage mem_stage
     // WB_stage wb_stage
     
