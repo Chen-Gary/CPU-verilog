@@ -17,6 +17,10 @@
 
 
 module ID_stage (
+    // special output
+    output terminateCPU_out,
+
+
     // input
     input CLK,
 
@@ -57,6 +61,9 @@ module ID_stage (
     output reg [5:0] ALUfunctD,
     output reg RegDstD
 );
+
+    // special local var
+    reg terminateCPU;
 
     // local var
     reg [31:0] instruction;
@@ -101,12 +108,19 @@ module ID_stage (
      * combinational logic
      * terminate the program (with delay) if `instruction` == 32'hffffffff.
     */
+    initial begin
+        terminateCPU <= 1'b0;
+    end
+
     always @(instruction) begin
         if (instruction == 32'hffffffff) begin
             #40;        // wait for 4 clock (10 time unit per clock), so that the previous instrcution finishes its execution
+            terminateCPU <= 1'b1;
+            #1;
             $finish;
         end
     end
+    assign terminateCPU_out = terminateCPU;
 
 
     /*

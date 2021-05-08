@@ -3,7 +3,11 @@
 */
 //`timescale 100fs/100fs
 module MainMemory
-    ( // Inputs
+    ( 
+      // special input
+      input terminateCPU,
+      
+      // Inputs
       input  CLOCK // clock
     , input  RESET // reset
     , input  ENABLE
@@ -73,11 +77,19 @@ module MainMemory
   // display the top 30 rows of the Main Memory in the screen
   // integer j;
   // final begin
-  //   $display("The top 30 rows of the Main Memory: ");
   //   for (j=0; j < 30; j=j+1) begin
   //     $display("%b", DATA_RAM[j]);
   //   end
   // end
+  integer j;
+  always @(terminateCPU) begin
+    $display("The top 30 rows of the Main Memory: ");
+    if (terminateCPU == 1'b1) begin
+      for (j=0; j < 30; j=j+1) begin
+        $display("Index %d: %b", j, DATA_RAM[j]);
+      end
+    end
+  end
 
 endmodule
 

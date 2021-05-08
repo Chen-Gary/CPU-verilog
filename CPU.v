@@ -89,6 +89,10 @@ module CPU (
     input CLK
 );
 
+    // special signal connecting ID/MEM stage
+    wire terminateCPU_ID_MEM;
+
+
     // variables connecting IF/ID stages
     wire [31:0] instruction_IF_ID;
     wire [31:0] PCPlus4_IF_ID;
@@ -166,6 +170,9 @@ module CPU (
     
 
     ID_stage id_stage (
+        // special output
+        .terminateCPU_out  (terminateCPU_ID_MEM),
+
         // input
         .CLK               (CLK),
 
@@ -253,6 +260,10 @@ module CPU (
 
 
     MEM_stage mem_stage (
+        // special input
+        .terminateCPU           (terminateCPU_ID_MEM),
+        
+
         // input
         .CLK                    (CLK),
 

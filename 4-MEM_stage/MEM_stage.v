@@ -20,6 +20,10 @@
 
 
 module MEM_stage (
+    // special input
+    input terminateCPU,
+
+
     // input
     input CLK,
 
@@ -163,6 +167,9 @@ module MEM_stage (
      * instantiate "Data Memory"
     */
     MainMemory mainMemory (
+        // special input
+        .terminateCPU   (terminateCPU),
+
         // input
         .CLOCK          (CLK),
         .RESET          (1'b0),
@@ -175,6 +182,6 @@ module MEM_stage (
     );
 
 
-    
+
 endmodule
 
