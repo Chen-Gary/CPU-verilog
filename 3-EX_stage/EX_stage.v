@@ -38,7 +38,7 @@ module EX_stage (
     input RegDstD,                      // stored by local var
 
 
-    // output
+    // output (to MEM_stage)
     // directly output
     output reg RegWriteE,
     output reg MemtoRegE,
