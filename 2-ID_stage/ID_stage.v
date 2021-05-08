@@ -93,6 +93,20 @@ module ID_stage (
     end
 
 
+    /*
+     * (not in the above comment)
+     * submodule: Program terminator
+     * --------------------------------------
+     * combinational logic
+     * terminate the program (with delay) if `instruction` == 32'hffffffff.
+    */
+    always @(instruction) begin
+        if (instruction == 32'hffffffff) begin
+            #40;        // wait for 4 clock (10 time unit per clock), so that the previous instrcution finishes its execution
+            $finish;
+        end
+    end
+
 
     /*
      * submodule: IF/ID pipeline register
