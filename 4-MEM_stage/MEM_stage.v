@@ -174,8 +174,8 @@ module MEM_stage (
         .CLOCK          (CLK),
         .RESET          (1'b0),
         .ENABLE         (1'b1),
-        .FETCH_ADDRESS  (ALUOut),
-        .EDIT_SERIAL    ( { MemWriteM, ALUOut, WriteData } ),
+        .FETCH_ADDRESS  ( ALUOut >> 2 ),
+        .EDIT_SERIAL    ( { MemWriteM, (ALUOut>>2), WriteData } ),
 
         // output
         .DATA           (ReadData_out)
