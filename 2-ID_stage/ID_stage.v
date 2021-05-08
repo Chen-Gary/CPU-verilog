@@ -69,6 +69,7 @@ module ID_stage (
 
     // register file
     reg [31:0] [31:0] registerFile; 
+    //reg [31:0] registerFile [31:0];
 
 
     // initialize register file

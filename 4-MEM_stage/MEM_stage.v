@@ -88,8 +88,92 @@ module MEM_stage (
 
 
     /*
-     * 
+     * submodule: EX/MEM pipeline register
+     * -------------------------------------------
+     * sequential logic
+     * store the inputs from previous stage (EX_stage)
     */
+    always @(posedge CLK) begin
+        RegWriteM <= RegWriteE;
+        MemtoRegM <= MemtoRegE;
+        MemWriteM <= MemWriteE;
+        BranchM <= BranchE;
+        JumpM <= JumpE;
+
+        ALUopM <= ALUopE;
+        WriteData <= WriteData_in;
+        PCPlus4_out <= PCPlus4_in;
+
+        PCBranch <= PCBranch_in;
+
+        wb_addr_out <= wb_addr_in;
+
+        ALUOut <= ALUOut_in;
+    end
+    // continuous assignment for the "directly" output
+    assign ALUOut_out = ALUOut;
+
+
+    /*
+     * submodule: PCSrc control signal generator
+     * -------------------------------------------
+     * combinational logic
+     * Input: JumpM, BranchM, ALUOut
+     * Output: PCSrcM
+     *
+     * generate PCSrcM signal, which is output to IF_stage
+    */
+    always @(*) begin
+        // by default, not branch or jump
+        PCSrcM = 1'b0;
+
+        // check Jump instructions
+        if (JumpM == 1'b1) begin
+            PCSrcM = 1'b1;
+        end
+
+        // check Branch instrctions
+        if (BranchM==1'b1 && ALUOut==32'b1) begin
+            PCSrcM = 1'b1;
+        end
+    end
+
+
+    /*
+     * submodule: PC_next_jumpOrBranch selector
+     * -------------------------------------------
+     * combinational logic
+     * Input: JumpM, ALUOut, PCBranch
+     * Output: PC_next_jumpOrBranch
+    */
+    always @(*) begin
+        // by default, set to "PCBranch"
+        // OR if (BranchM == 1'b1), set to "PCBranch"
+        PC_next_jumpOrBranch = PCBranch;
+
+        // if Jump instrcutions
+        if (JumpM == 1'b1) begin
+            PC_next_jumpOrBranch = ALUOut; // ALU calculates the jump target PC addr
+        end
+    end
+
+
+    /*
+     * submodule: MainMemory
+     * -----------------------------------
+     * instantiate "Data Memory"
+    */
+    MainMemory mainMemory (
+        // input
+        .CLOCK          (CLK),
+        .RESET          (1'b0),
+        .ENABLE         (1'b1),
+        .FETCH_ADDRESS  (ALUOut),
+        .EDIT_SERIAL    ( { MemWriteM, ALUOut, WriteData } ),
+
+        // output
+        .DATA           (ReadData_out)
+    );
 
 
     

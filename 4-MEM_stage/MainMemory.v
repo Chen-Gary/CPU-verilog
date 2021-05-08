@@ -49,6 +49,7 @@ module MainMemory
   end
 
   always @(posedge CLOCK) begin : DATA_blockRam
+    #1; // wait for the inputs to be ready. Add by CHH.
     if (c$app_arg & ENABLE) begin
       DATA_RAM[(wild_0)] <= ds[31:0];
     end
@@ -66,6 +67,17 @@ module MainMemory
 
   assign ds = EDIT_SERIAL[64:64] ? a1 : ({64 {1'bx}});
 
+
+  // Add by CHH. 
+  // "final" block not supported
+  // display the top 30 rows of the Main Memory in the screen
+  // integer j;
+  // final begin
+  //   $display("The top 30 rows of the Main Memory: ");
+  //   for (j=0; j < 30; j=j+1) begin
+  //     $display("%b", DATA_RAM[j]);
+  //   end
+  // end
 
 endmodule
 
