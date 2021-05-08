@@ -16,7 +16,6 @@
 */
 
 
-// modify the "MainMemory.v" by adding **delay**!
 // your CPU should display the top 30 rows of the Main Memory in the screen.
 
 

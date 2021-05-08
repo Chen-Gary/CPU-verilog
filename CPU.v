@@ -132,14 +132,32 @@ module CPU (
     wire [31:0] ALUOut_EX_MEM;
 
 
+    // variables connecting MEM/WB stages
+    wire        RegWrite_MEM_WB;
+    wire        MemtoReg_MEM_WB;
+    wire [ 5:0] ALUop_MEM_WB;
+
+    wire [31:0] PCPlus4_MEM_WB;
+    wire [ 4:0] wb_addr_MEM_WB;
+
+    wire [31:0] ALUOut_MEM_WB;
+
+    wire [31:0] ReadData_MEM_WB;
+
+    // variables connecting MEM/IF stages
+    wire        PCSrc_MEM_IF;
+
+    wire [31:0] PC_next_jumpOrBranch_MEM_IF;
+
+
 
     // instanciate the five stages
     IF_stage if_stage (
         // input
         .CLK                    (CLK),
 
-        .PCSrc                  (1'b0), // later...MEM_stage
-        .PC_next_jumpOrBranch   (32'b0), // later...MEM_stage
+        .PCSrc                  (PCSrc_MEM_IF),
+        .PC_next_jumpOrBranch   (PC_next_jumpOrBranch_MEM_IF),
 
         // output (to ID_stage)
         .instruction            (instruction_IF_ID),
@@ -234,7 +252,53 @@ module CPU (
     );
 
 
-    // MEM_stage mem_stage
+    MEM_stage mem_stage (
+        // input
+        .CLK                    (CLK),
+
+        // input from EX_stage
+        .RegWriteE              (RegWrite_EX_MEM),
+        .MemtoRegE              (MemtoReg_EX_MEM),
+        .MemWriteE              (MemWrite_EX_MEM),
+        .BranchE                (Branch_EX_MEM),
+        .JumpE                  (Jump_EX_MEM),
+
+        .ALUopE                 (ALUop_EX_MEM),
+        .WriteData_in           (WriteData_EX_MEM),
+        .PCPlus4_in             (PCPlus4_EX_MEM),
+
+        .PCBranch_in            (PCBranch_EX_MEM),
+
+        .wb_addr_in             (wb_addr_EX_MEM),
+
+        .ALUOut_in              (ALUOut_EX_MEM),
+
+
+        // output
+        // output to WB_stage
+        // directly output
+        .RegWriteM              (RegWrite_MEM_WB),
+        .MemtoRegM              (MemtoReg_MEM_WB),
+        .ALUopM                 (ALUop_MEM_WB),
+
+        .PCPlus4_out            (PCPlus4_MEM_WB),
+        .wb_addr_out            (wb_addr_MEM_WB),
+
+        // "directly" output
+        .ALUOut_out             (ALUOut_MEM_WB),
+
+        // output from "MainMemory"
+        .ReadData_out           (ReadData_MEM_WB),
+        
+        // output to IF_stage
+        // output from "PCSrc control signal generator"
+        .PCSrcM                 (PCSrc_MEM_IF),
+
+        // output from "PC_next_jumpOrBranch selector"
+        .PC_next_jumpOrBranch   (PC_next_jumpOrBranch_MEM_IF)
+    );
+
+
     // WB_stage wb_stage
     
 endmodule
