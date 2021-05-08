@@ -1,5 +1,6 @@
 `include "4-MEM_stage/MainMemory.v"
 
+
 /*
  * MEM_stage
  * ------------------------------------------------
@@ -15,8 +16,6 @@
  *         MainMemory.v
 */
 
-
-// your CPU should display the top 30 rows of the Main Memory in the screen.
 
 
 module MEM_stage (
@@ -66,7 +65,10 @@ module MEM_stage (
     output reg PCSrcM,
 
     // output from "PC_next_jumpOrBranch selector"
-    output reg [31:0] PC_next_jumpOrBranch
+    output reg [31:0] PC_next_jumpOrBranch,
+
+    // output to ID_stage and EX_stage
+    output reg flush
 );
 
     // local var
@@ -87,6 +89,7 @@ module MEM_stage (
         RegWriteM <= 1'b0;
         MemtoRegM <= 1'b0;
         ALUopM    <= 6'b0;
+        flush     <= 1'b0;
     end
 
 
@@ -122,22 +125,26 @@ module MEM_stage (
      * -------------------------------------------
      * combinational logic
      * Input: JumpM, BranchM, ALUOut
-     * Output: PCSrcM
+     * Output: PCSrcM, flush
      *
      * generate PCSrcM signal, which is output to IF_stage
+     * also generate the **flush** signal for ID and EX stages
     */
     always @(*) begin
         // by default, not branch or jump
         PCSrcM = 1'b0;
+        flush  = 1'b0;
 
         // check Jump instructions
         if (JumpM == 1'b1) begin
             PCSrcM = 1'b1;
+            flush  = 1'b1;
         end
 
         // check Branch instrctions
         if (BranchM==1'b1 && ALUOut==32'b1) begin
             PCSrcM = 1'b1;
+            flush  = 1'b1;
         end
     end
 

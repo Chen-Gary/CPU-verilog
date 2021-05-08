@@ -153,6 +153,9 @@ module CPU (
 
     wire [31:0] PC_next_jumpOrBranch_MEM_IF;
 
+    // variables connecting MEM => ID and EX stages
+    wire        flush_MEM_ID_EX;
+
 
     // variables connecting WB/ID stages
     wire RegWrite_WB_ID;
@@ -182,6 +185,9 @@ module CPU (
 
         // input
         .CLK               (CLK),
+
+        // input from MEM_stage
+        .flush             (flush_MEM_ID_EX),
 
         .instruction_in    (instruction_IF_ID),
         .PCPlus4_in        (PCPlus4_IF_ID),
@@ -218,6 +224,9 @@ module CPU (
     EX_stage ex_stage (
         // input
         .CLK                     (CLK),
+
+        // input from MEM_stage
+        .flush                   (flush_MEM_ID_EX),
 
         // input from ID_stage
         .PCPlus4_in              (PCPlus4_ID_EX),
@@ -313,7 +322,10 @@ module CPU (
         .PCSrcM                 (PCSrc_MEM_IF),
 
         // output from "PC_next_jumpOrBranch selector"
-        .PC_next_jumpOrBranch   (PC_next_jumpOrBranch_MEM_IF)
+        .PC_next_jumpOrBranch   (PC_next_jumpOrBranch_MEM_IF),
+
+        // output to ID_stage and EX_stage
+        .flush                  (flush_MEM_ID_EX)
     );
 
 

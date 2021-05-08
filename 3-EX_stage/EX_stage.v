@@ -14,6 +14,9 @@ module EX_stage (
     // input
     input CLK,
 
+    // input from MEM_stage
+    input flush,
+
     // input from ID_stage
     input [31:0] PCPlus4_in,            // stored by local var; used in "Branch target calculator"
 
@@ -119,6 +122,32 @@ module EX_stage (
         op <= ALUopD;
         funct <= ALUfunctD;
         RegDstE <= RegDstD;
+
+        // check "flush"
+        #1; // wait for the "flush" signal to be ready
+        if (flush == 1'b1) begin
+            PCPlus4 <= 32'b0;
+
+            imm_signExtended <= 32'b0;
+            imm_zeroExtended <= 32'b0;
+
+            rt_addr <= 5'b0;
+            rd_addr <= 5'b0;
+            shamt <= 5'b0;
+            address_Jtype <= 26'b0;
+
+            rs_reg <= 32'b0;
+            rt_reg <= 32'b0;
+
+            RegWriteE <= 1'b0;
+            MemtoRegE <= 1'b0;
+            MemWriteE <= 1'b0;
+            BranchE <= 1'b0;
+            JumpE <= 1'b0;
+            op <= 6'b0;
+            funct <= 6'b0;
+            RegDstE <= 1'b0;
+        end
     end
     // continuous assignment for three "directly" outputs
     assign ALUopE = op;

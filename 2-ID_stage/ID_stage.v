@@ -24,6 +24,9 @@ module ID_stage (
     // input
     input CLK,
 
+    // input from MEM_stage
+    input flush,
+
     // input from IF_stage
     input [31:0] instruction_in,  // stored by local var
     input [31:0] PCPlus4_in,      // directly output to next stage
@@ -132,6 +135,13 @@ module ID_stage (
     always @(posedge CLK) begin
         instruction <= instruction_in;
         PCPlus4_out <= PCPlus4_in;
+
+        // check "flush"
+        #1; // wait for the "flush" signal to be ready
+        if (flush == 1'b1) begin
+            instruction <= 32'b0;
+            PCPlus4_out <= 32'b0;
+        end
     end
 
 
