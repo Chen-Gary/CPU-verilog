@@ -83,8 +83,8 @@ module MainMemory
   // end
   integer j;
   always @(terminateCPU) begin
-    $display("The top 30 rows of the Main Memory: ");
     if (terminateCPU == 1'b1) begin
+      $display("The top 30 rows of the Main Memory: ");
       for (j=0; j < 30; j=j+1) begin
         $display("Index %d: %b", j, DATA_RAM[j]);
       end

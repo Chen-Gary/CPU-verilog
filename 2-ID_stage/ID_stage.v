@@ -366,7 +366,7 @@ module ID_stage (
         end
         // Unrecognized instruction
         else begin
-            $display("Unrecognized instruction: %b (ID_stage)", instruction);
+            //$display("Unrecognized instruction: %b (ID_stage)", instruction);
             //$finish;
         end
     end

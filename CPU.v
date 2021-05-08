@@ -154,6 +154,13 @@ module CPU (
     wire [31:0] PC_next_jumpOrBranch_MEM_IF;
 
 
+    // variables connecting WB/ID stages
+    wire RegWrite_WB_ID;
+    wire [4:0] wb_addr_WB_ID;
+
+    wire [31:0] wb_data_WB_ID;
+
+
 
     // instanciate the five stages
     IF_stage if_stage (
@@ -179,9 +186,9 @@ module CPU (
         .instruction_in    (instruction_IF_ID),
         .PCPlus4_in        (PCPlus4_IF_ID),
 
-        .RegWriteW         (1'b0),// later...WB_stage
-        .wb_addr           (5'b0),// later...WB_stage
-        .wb_data           (32'b0),
+        .RegWriteW         (RegWrite_WB_ID),
+        .wb_addr           (wb_addr_WB_ID),
+        .wb_data           (wb_data_WB_ID),
 
         // output (to EX_stage)
         .PCPlus4_out       (PCPlus4_ID_EX),
@@ -262,7 +269,7 @@ module CPU (
     MEM_stage mem_stage (
         // special input
         .terminateCPU           (terminateCPU_ID_MEM),
-        
+
 
         // input
         .CLK                    (CLK),
@@ -310,6 +317,29 @@ module CPU (
     );
 
 
-    // WB_stage wb_stage
+    WB_stage wb_stage (
+        // input
+        .CLK                (CLK),
+
+        // input from MEM_stage
+        .RegWriteM          (RegWrite_MEM_WB),
+        .MemtoRegM          (MemtoReg_MEM_WB),
+        .ALUopM             (ALUop_MEM_WB),
+
+        .PCPlus4_in         (PCPlus4_MEM_WB),
+        .wb_addr_in         (wb_addr_MEM_WB),
+
+        .ALUOut_in          (ALUOut_MEM_WB),
+
+        .ReadData_in        (ReadData_MEM_WB),
+
+        // output (to ID_stage)
+        // directly output
+        .RegWriteW          (RegWrite_WB_ID),
+        .wb_addr_out        (wb_addr_WB_ID),
+
+        // output from "Write back data selector"
+        .wb_data_out        (wb_data_WB_ID)
+    );
     
 endmodule
