@@ -1,5 +1,7 @@
 /*
  * Change the input machine code in "InstructionRAM.v".
+ *
+ * The clock is 10 time unit per cycle.
 */
 
 
@@ -11,7 +13,10 @@ module test_CPU;
     
     reg CLK;
 
-    CPU testCPU (CLK);
+
+    CPU testCPU (
+        .CLK (CLK)
+    );
 
 
     // generate clock signal (T = 10)

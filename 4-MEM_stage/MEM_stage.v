@@ -1,6 +1,3 @@
-`include "4-MEM_stage/MainMemory.v"
-
-
 /*
  * MEM_stage
  * ------------------------------------------------
@@ -16,6 +13,8 @@
  *         MainMemory.v
 */
 
+
+`include "4-MEM_stage/MainMemory.v"
 
 
 module MEM_stage (
