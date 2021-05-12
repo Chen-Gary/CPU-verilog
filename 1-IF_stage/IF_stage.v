@@ -6,7 +6,7 @@
  *         update the PC address so that the next instruction can be fetched later in **this** stage
  *    2. PCPlus4 adder (combinational)
  *         always output current PC+4
- *    3. Instrcution Memory
+ *    3. Instruction Memory
  *         InstructionRAM.v (sequential)
 */
 
@@ -75,7 +75,7 @@ module IF_stage (
 
 
     /*
-     * submodule: Instrcution Memory
+     * submodule: Instruction Memory
      * ---------------------------------------
      * instantiate "Instruction Memory"
     */

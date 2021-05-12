@@ -4,7 +4,7 @@
  * There are 5 modules correspond to the 5 the stages.
  * 
  * Inside these 5 modules/stages, there are several submodules,
- * which are ( i) not edge triggered (comninational logic)   ==> e.g. ALU
+ * which are ( i) not edge triggered (combinational logic)   ==> e.g. ALU
  *           (ii) edge triggered (sequential logic)          ==> e.g. pipeline register
  * 
  * Note that most submodules are implemented by different "always" blocks in the corresponding XXX_stage module,
