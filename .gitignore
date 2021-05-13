@@ -4,3 +4,5 @@
 *.vcd
 
 test_CPU
+
+output_data_memory.txt

@@ -82,13 +82,29 @@ module MainMemory
   //   end
   // end
   integer j;
+  integer handle;
   always @(terminateCPU) begin
     if (terminateCPU == 1'b1) begin
-      $display("The top 30 rows of the Main Memory: ");
-      for (j=0; j < 30; j=j+1) begin
-        //$display("Index %d: %b", j, DATA_RAM[j]);
-        $display("%b", DATA_RAM[j]);
+      // $display("The top 30 rows of the Main Memory: ");
+      // for (j=0; j < 30; j=j+1) begin
+      //   //$display("Index %d: %b", j, DATA_RAM[j]);
+      //   $display("%b", DATA_RAM[j]);
+      // end
+
+
+      // output the data memory to the file "output_data_memory.txt"
+      $display("");
+      $display("--------------------------------------------------------------------------");
+      $display("The 512 lines data memory are outputed to \"output_data_memory.txt\" file.");
+      $display("--------------------------------------------------------------------------");
+      $display("");
+
+      handle = $fopen("output_data_memory.txt", "w");
+      for (j=0; j < 512; j=j+1) begin
+        $fwrite(handle, "%b\n", DATA_RAM[j]);
       end
+      $fclose(handle);
+
     end
   end
 

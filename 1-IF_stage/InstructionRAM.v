@@ -37,7 +37,7 @@ module InstructionRAM
   initial begin
     // input the path of the machine code file as follow:
     // $readmemb("<machine_code_file>.txt",RAM);
-    $readmemb("cpu_test/machine_code4.txt",RAM);
+    $readmemb("instructions.bin",RAM);
   end
 
   always @(posedge CLOCK) begin : InstructionRAM_blockRamFile
